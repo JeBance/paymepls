@@ -1,10 +1,5 @@
-/* ============================================================
-   РЕНДЕРИНГ КОШЕЛЬКОВ В КОНСТРУКТОРЕ
-============================================================ */
-
 import { state, addWallet, removeWallet, updateWalletName, updateWalletValue } from "./store.js";
 import { escapeHTML } from "./utils.js";
-import { renderPreview } from "./preview.js";
 
 export function renderWallets() {
     const list = document.getElementById("wallet-list");
@@ -35,7 +30,6 @@ export function renderWallets() {
         input.addEventListener("input", e => {
             const id = Number(e.target.dataset.id);
             updateWalletName(id, e.target.value);
-            renderPreview();
         });
     });
 
@@ -43,7 +37,6 @@ export function renderWallets() {
         input.addEventListener("input", e => {
             const id = Number(e.target.dataset.id);
             updateWalletValue(id, e.target.value);
-            renderPreview();
         });
     });
 
@@ -52,17 +45,12 @@ export function renderWallets() {
             const id = Number(btn.dataset.remove);
             removeWallet(id);
             renderWallets();
-            renderPreview();
         });
     });
-
-    renderPreview();
 }
 
 export function initAddWalletButton() {
     const btn = document.getElementById("add-wallet-btn");
-    if (!btn) return;
-
     btn.addEventListener("click", () => {
         addWallet();
         renderWallets();

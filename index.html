@@ -202,57 +202,36 @@ textarea.input{resize:vertical;min-height:140px;}
         </div>
     </header>
 
-    <!-- INTRO -->
-    <section id="intro" class="card" style="margin-top: var(--section-gap);">
-        <h1>Создай свою страницу реквизитов</h1>
-        <p>
-            Минималистичный конструктор, который позволяет собрать удобную страницу с реквизитами,
-            ссылками и QR‑кодами. Всё работает без сервера — данные хранятся прямо в ссылке.
-        </p>
-    </section>
-
     <!-- КОНСТРУКТОР -->
     <section id="constructor" class="card" style="margin-top: var(--section-gap);">
 
-        <h2>Основная информация</h2>
+        <!-- Заголовок как input -->
+        <input id="title" class="input" style="font-size:1.6rem;font-weight:700;" value="Мои реквизиты">
 
-        <div class="grid grid-2" style="margin-top: 28px;">
+        <!-- Описание -->
+        <textarea id="description" class="input" style="margin-top:24px;">Выберите удобный способ для перевода</textarea>
 
-            <!-- ЛЕВЫЙ СТОЛБЕЦ -->
-            <div>
-
-                <div>
-                    <label>Заголовок</label>
-                    <input id="title" class="input" placeholder="Например: Мои реквизиты">
-                </div>
-
-                <div style="margin-top: 24px;">
-                    <label>Описание</label>
-                    <textarea id="description" class="input" placeholder="Например: Выберите удобный способ для перевода"></textarea>
-                </div>
-
-                <div style="margin-top: 24px;">
-                    <label>Тема оформления</label>
-                    <select id="theme-select" class="input">
-                        <option value="classic">Classic</option>
-                        <option value="ocean">Ocean</option>
-                        <option value="sunset">Sunset</option>
-                        <option value="forest">Forest</option>
-                        <option value="cyberpunk">Cyberpunk</option>
-                        <option value="gray">Gray</option>
-                        <option value="gold">Gold</option>
-                        <option value="mint">Mint</option>
-                        <option value="lavender">Lavender</option>
-                        <option value="dark">Dark</option>
-                    </select>
-                </div>
-
-            </div>
-
-            <!-- ПРАВЫЙ СТОЛБЕЦ -->
-            <div id="wallet-list" class="grid grid-2" style="margin-top: 0;"></div>
-
+        <!-- Тема -->
+        <div style="margin-top:24px;">
+            <label>Тема оформления</label>
+            <select id="theme-select" class="input" style="margin-top:12px;">
+                <option value="classic">Classic</option>
+                <option value="ocean">Ocean</option>
+                <option value="sunset">Sunset</option>
+                <option value="forest">Forest</option>
+                <option value="cyberpunk">Cyberpunk</option>
+                <option value="gray">Gray</option>
+                <option value="gold">Gold</option>
+                <option value="mint">Mint</option>
+                <option value="lavender">Lavender</option>
+                <option value="dark">Dark</option>
+            </select>
         </div>
+
+        <!-- Кошельки -->
+        <h2 style="margin-top:var(--section-gap);">Кошельки</h2>
+
+        <div id="wallet-list" class="grid grid-2" style="margin-top: 28px;"></div>
 
         <button id="add-wallet-btn" class="btn" style="margin-top: 32px;">
             <i class="fas fa-plus"></i> Добавить кошелёк
@@ -281,12 +260,6 @@ textarea.input{resize:vertical;min-height:140px;}
                 <i class="fas fa-external-link-alt"></i> Открыть
             </button>
         </div>
-    </section>
-
-    <!-- ПРЕДПРОСМОТР -->
-    <section id="preview" class="card" style="margin-top: var(--section-gap); display:none;">
-        <h2>Предпросмотр</h2>
-        <div id="preview-container" style="margin-top: 28px;"></div>
     </section>
 
     <!-- VIEW MODE -->
