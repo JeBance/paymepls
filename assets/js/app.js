@@ -8,10 +8,6 @@ import { renderPreview } from "./preview.js";
 import { generateLink, initLinkButtons } from "./link.js";
 import { checkForViewMode, applyThemeFromURL } from "./viewmode.js";
 
-/* ============================================================
-   ИНИЦИАЛИЗАЦИЯ ПОЛЕЙ
-============================================================ */
-
 function initMainFields() {
     const titleInput = document.getElementById("title");
     const descInput = document.getElementById("description");
@@ -34,22 +30,15 @@ function initMainFields() {
             const theme = e.target.value;
             state.theme = theme;
 
-            // Удаляем старые темы
             document.body.classList.forEach(c => {
                 if (c.startsWith("theme-")) document.body.classList.remove(c);
             });
 
-            // Добавляем новую
             document.body.classList.add(`theme-${theme}`);
-
             renderPreview();
         });
     }
 }
-
-/* ============================================================
-   ИНИЦИАЛИЗАЦИЯ КНОПОК
-============================================================ */
 
 function initButtons() {
     const generateBtn = document.getElementById("generate-btn");
@@ -69,18 +58,14 @@ function initButtons() {
     initLinkButtons();
 }
 
-/* ============================================================
-   ЗАПУСК ПРИЛОЖЕНИЯ
-============================================================ */
-
 function init() {
-    applyThemeFromURL();   // применяем тему из URL
-    checkForViewMode();    // если есть data — включаем view‑mode
+    applyThemeFromURL();
+    checkForViewMode();
 
-    initMainFields();      // поля title/description/theme
-    initButtons();         // кнопки
-    renderWallets();       // рендерим пустой список
-    renderPreview();       // обновляем предпросмотр
+    initMainFields();
+    initButtons();
+    renderWallets();
+    renderPreview();
 }
 
 init();

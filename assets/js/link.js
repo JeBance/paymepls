@@ -4,9 +4,6 @@
 
 import { state } from "./store.js";
 
-/**
- * Генерирует ссылку на страницу реквизитов
- */
 export function generateLink() {
     const data = {
         title: state.title,
@@ -24,9 +21,6 @@ export function generateLink() {
     result.style.display = "block";
 }
 
-/**
- * Инициализация кнопок копирования и открытия ссылки
- */
 export function initLinkButtons() {
     const copyBtn = document.getElementById("copy-btn");
     const testBtn = document.getElementById("test-link-btn");

@@ -4,11 +4,7 @@
 
 import { escapeHTML, getQRSize } from "./utils.js";
 
-/**
- * Рендерит страницу реквизитов (view‑mode)
- */
 export function renderViewMode(data) {
-    // Скрываем конструктор
     document.getElementById("constructor").style.display = "none";
     document.getElementById("intro").style.display = "none";
     document.getElementById("preview").style.display = "none";
@@ -20,12 +16,10 @@ export function renderViewMode(data) {
     const container = document.getElementById("payment-page-container");
     container.innerHTML = "";
 
-    // Заголовок
     const title = document.createElement("h1");
     title.textContent = data.title || "Реквизиты";
     container.appendChild(title);
 
-    // Описание
     if (data.description) {
         const desc = document.createElement("p");
         desc.textContent = data.description;
@@ -33,7 +27,6 @@ export function renderViewMode(data) {
         container.appendChild(desc);
     }
 
-    // Сетка кошельков
     const grid = document.createElement("div");
     grid.className = "grid grid-2";
     container.appendChild(grid);
@@ -54,7 +47,6 @@ export function renderViewMode(data) {
 
         grid.appendChild(card);
 
-        // QR‑код
         new QRCode(document.getElementById(`qr-view-${wallet.id}`), {
             text: wallet.value,
             width: getQRSize(),
@@ -62,7 +54,6 @@ export function renderViewMode(data) {
         });
     });
 
-    // Копирование реквизитов
     document.querySelectorAll("[data-copy]").forEach(btn => {
         btn.addEventListener("click", () => {
             navigator.clipboard.writeText(btn.dataset.copy);
@@ -70,13 +61,6 @@ export function renderViewMode(data) {
     });
 }
 
-/* ============================================================
-   ПАРСИНГ ССЫЛКИ
-============================================================ */
-
-/**
- * Проверяет URL и включает view‑mode, если есть параметр data
- */
 export function checkForViewMode() {
     const params = new URLSearchParams(location.search);
 
@@ -90,27 +74,17 @@ export function checkForViewMode() {
     }
 }
 
-/* ============================================================
-   ПРИМЕНЕНИЕ ТЕМЫ
-============================================================ */
-
-/**
- * Применяет тему из параметра URL
- */
 export function applyThemeFromURL() {
     const params = new URLSearchParams(location.search);
     const theme = params.get("theme");
 
     if (theme) {
-        // Удаляем старые темы
         document.body.classList.forEach(c => {
             if (c.startsWith("theme-")) document.body.classList.remove(c);
         });
 
-        // Добавляем новую
         document.body.classList.add(`theme-${theme}`);
 
-        // Синхронизируем селектор, если он есть
         const select = document.getElementById("theme-select");
         if (select) select.value = theme;
     }

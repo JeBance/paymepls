@@ -6,9 +6,6 @@ import { state, addWallet, removeWallet, updateWalletName, updateWalletValue } f
 import { escapeHTML } from "./utils.js";
 import { renderPreview } from "./preview.js";
 
-/**
- * Рендерит список кошельков в конструкторе
- */
 export function renderWallets() {
     const list = document.getElementById("wallet-list");
     list.innerHTML = "";
@@ -34,7 +31,6 @@ export function renderWallets() {
         list.appendChild(div);
     });
 
-    /* Название кошелька */
     document.querySelectorAll(".wallet-name").forEach(input => {
         input.addEventListener("input", e => {
             const id = Number(e.target.dataset.id);
@@ -43,7 +39,6 @@ export function renderWallets() {
         });
     });
 
-    /* Реквизиты кошелька */
     document.querySelectorAll(".wallet-value").forEach(input => {
         input.addEventListener("input", e => {
             const id = Number(e.target.dataset.id);
@@ -52,7 +47,6 @@ export function renderWallets() {
         });
     });
 
-    /* Удаление */
     document.querySelectorAll("[data-remove]").forEach(btn => {
         btn.addEventListener("click", () => {
             const id = Number(btn.dataset.remove);
@@ -65,9 +59,6 @@ export function renderWallets() {
     renderPreview();
 }
 
-/**
- * Обработчик кнопки "Добавить кошелёк"
- */
 export function initAddWalletButton() {
     const btn = document.getElementById("add-wallet-btn");
     if (!btn) return;
