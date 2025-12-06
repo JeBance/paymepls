@@ -218,37 +218,41 @@ textarea.input{resize:vertical;min-height:140px;}
 
         <div class="grid grid-2" style="margin-top: 28px;">
 
+            <!-- ЛЕВЫЙ СТОЛБЕЦ -->
             <div>
-                <label>Заголовок</label>
-                <input id="title" class="input" placeholder="Например: Мои реквизиты">
+
+                <div>
+                    <label>Заголовок</label>
+                    <input id="title" class="input" placeholder="Например: Мои реквизиты">
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <label>Описание</label>
+                    <textarea id="description" class="input" placeholder="Например: Выберите удобный способ для перевода"></textarea>
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <label>Тема оформления</label>
+                    <select id="theme-select" class="input">
+                        <option value="classic">Classic</option>
+                        <option value="ocean">Ocean</option>
+                        <option value="sunset">Sunset</option>
+                        <option value="forest">Forest</option>
+                        <option value="cyberpunk">Cyberpunk</option>
+                        <option value="gray">Gray</option>
+                        <option value="gold">Gold</option>
+                        <option value="mint">Mint</option>
+                        <option value="lavender">Lavender</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
+
             </div>
 
-            <div>
-                <label>Описание</label>
-                <textarea id="description" class="input" placeholder="Например: Выберите удобный способ для перевода"></textarea>
-            </div>
-
-            <div>
-                <label>Тема оформления</label>
-                <select id="theme-select" class="input">
-                    <option value="classic">Classic</option>
-                    <option value="ocean">Ocean</option>
-                    <option value="sunset">Sunset</option>
-                    <option value="forest">Forest</option>
-                    <option value="cyberpunk">Cyberpunk</option>
-                    <option value="gray">Gray</option>
-                    <option value="gold">Gold</option>
-                    <option value="mint">Mint</option>
-                    <option value="lavender">Lavender</option>
-                    <option value="dark">Dark</option>
-                </select>
-            </div>
+            <!-- ПРАВЫЙ СТОЛБЕЦ -->
+            <div id="wallet-list" class="grid grid-2" style="margin-top: 0;"></div>
 
         </div>
-
-        <h2 style="margin-top: var(--section-gap);">Кошелки</h2>
-
-        <div id="wallet-list" class="grid grid-2" style="margin-top: 28px;"></div>
 
         <button id="add-wallet-btn" class="btn" style="margin-top: 32px;">
             <i class="fas fa-plus"></i> Добавить кошелёк
@@ -294,7 +298,6 @@ textarea.input{resize:vertical;min-height:140px;}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-<!-- КРИТИЧНО: относительный путь БЕЗ ведущего слэша -->
 <script type="module" src="assets/js/app.js"></script>
 
 </body>
