@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-/* ====== ВСЕ ТВОИ СТИЛИ БЕЗ ИЗМЕНЕНИЙ ====== */
 :root {
     --primary:#6c5ce7;
     --secondary:#00b894;
@@ -133,7 +132,10 @@ textarea.input{resize:vertical;min-height:140px;}
     .qr-box canvas{width:200px!important;height:200px!important;}
 }
 
-/* ====== ТЕМЫ (без изменений) ====== */
+/* ===========================
+   ТЕМЫ
+=========================== */
+
 .theme-classic  {--primary:#6c5ce7;--secondary:#00b894;--background:#f5f7fa;}
 .theme-ocean    {--primary:#0984e3;--secondary:#00cec9;--background:#e3f6ff;}
 .theme-sunset   {--primary:#ff7675;--secondary:#fdcb6e;--background:#fff3e0;}
@@ -203,22 +205,27 @@ textarea.input{resize:vertical;min-height:140px;}
     <!-- INTRO -->
     <section id="intro" class="card" style="margin-top: var(--section-gap);">
         <h1>Создай свою страницу реквизитов</h1>
-        <p>Минималистичный конструктор...</p>
+        <p>
+            Минималистичный конструктор, который позволяет собрать удобную страницу с реквизитами,
+            ссылками и QR‑кодами. Всё работает без сервера — данные хранятся прямо в ссылке.
+        </p>
     </section>
 
     <!-- КОНСТРУКТОР -->
     <section id="constructor" class="card" style="margin-top: var(--section-gap);">
+
         <h2>Основная информация</h2>
 
         <div class="grid grid-2" style="margin-top: 28px;">
+
             <div>
                 <label>Заголовок</label>
-                <input id="title" class="input">
+                <input id="title" class="input" placeholder="Например: Мои реквизиты">
             </div>
 
             <div>
                 <label>Описание</label>
-                <textarea id="description" class="input"></textarea>
+                <textarea id="description" class="input" placeholder="Например: Выберите удобный способ для перевода"></textarea>
             </div>
 
             <div>
@@ -236,9 +243,11 @@ textarea.input{resize:vertical;min-height:140px;}
                     <option value="dark">Dark</option>
                 </select>
             </div>
+
         </div>
 
         <h2 style="margin-top: var(--section-gap);">Кошелки</h2>
+
         <div id="wallet-list" class="grid grid-2" style="margin-top: 28px;"></div>
 
         <button id="add-wallet-btn" class="btn" style="margin-top: 32px;">
@@ -250,16 +259,23 @@ textarea.input{resize:vertical;min-height:140px;}
                 <i class="fas fa-link"></i> Создать ссылку
             </button>
         </div>
+
     </section>
 
     <!-- РЕЗУЛЬТАТ -->
     <section id="result" class="card" style="margin-top: var(--section-gap); display:none;">
         <h2>Готовая ссылка</h2>
+
         <input id="generated-url" class="input" readonly style="margin-top: 20px;">
 
         <div style="margin-top: 28px; display:flex; gap:20px; flex-wrap:wrap;">
-            <button id="copy-btn" class="btn"><i class="fas fa-copy"></i> Скопировать</button>
-            <button id="test-link-btn" class="btn btn-secondary"><i class="fas fa-external-link-alt"></i> Открыть</button>
+            <button id="copy-btn" class="btn">
+                <i class="fas fa-copy"></i> Скопировать
+            </button>
+
+            <button id="test-link-btn" class="btn btn-secondary">
+                <i class="fas fa-external-link-alt"></i> Открыть
+            </button>
         </div>
     </section>
 
@@ -278,8 +294,8 @@ textarea.input{resize:vertical;min-height:140px;}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-<!-- ====== ПОДКЛЮЧЕНИЕ МОДУЛЕЙ ====== -->
-<script type="module" src="./assets/js/app.js"></script>
+<!-- ✅ ИСПРАВЛЕННЫЙ ПУТЬ К МОДУЛЮ -->
+<script type="module" src="/paymepls/assets/js/app.js"></script>
 
 </body>
 </html>
