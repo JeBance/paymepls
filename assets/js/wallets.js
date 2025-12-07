@@ -7,14 +7,14 @@ export function renderWallets() {
     // Очищаем всё, кроме кнопки «+»
     const addCard = document.getElementById("add-wallet-card");
     list.innerHTML = "";
-    list.appendChild(addCard);
+    list.appendChild(addCard); // Сначала вставляем «+»
 
-    // Если нет кошельков — добавим невидимую заглушку перед «+»
+    // Если нет кошельков — добавляем заглушку после «+»
     if (state.wallets.length === 0) {
         const placeholder = document.createElement("div");
         placeholder.className = "card";
         placeholder.style.visibility = "hidden";
-        list.insertBefore(placeholder, addCard);
+        list.appendChild(placeholder);
     }
 
     state.wallets.forEach(wallet => {
@@ -35,7 +35,7 @@ export function renderWallets() {
             </button>
         `;
 
-        list.insertBefore(div, addCard);
+        list.appendChild(div);
     });
 
     document.querySelectorAll(".wallet-name").forEach(input => {

@@ -190,6 +190,7 @@ textarea.input{resize:vertical;min-height:140px;}
     justify-content: center;
     align-items: center;
     padding: clamp(28px, 4vw, 40px);
+    min-height: 220px; /* как у .card */
     border-radius: var(--radius);
     background: #fff;
     border: 2px dashed var(--primary);
