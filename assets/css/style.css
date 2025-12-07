@@ -272,3 +272,29 @@ textarea.input{resize:vertical;min-height:140px;}
     flex-direction: column;
     align-items: left;
 }
+
+.footer {
+    margin-top: 40px;
+    padding: 20px 0;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    opacity: 0.5;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.footer a {
+    color: var(--primary);
+    text-decoration: none;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.footer a:hover {
+    opacity: 1;
+}
