@@ -257,3 +257,18 @@ textarea.input{resize:vertical;min-height:140px;}
     cursor: pointer;
     text-decoration: underline;
 }
+
+.tagline {
+    margin-top: 4px;
+    font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    color: var(--primary);
+    opacity: 0.8;
+    line-height: 1.4;
+    text-align: left;
+}
+
+.logo-block {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+}
