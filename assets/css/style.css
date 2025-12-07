@@ -298,3 +298,28 @@ textarea.input{resize:vertical;min-height:140px;}
 .footer a:hover {
     opacity: 1;
 }
+
+::placeholder {
+    color: var(--text-main);
+    opacity: 0.35;
+}
+
+#result {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+#result.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes highlight {
+    0%   { box-shadow: 0 0 0 0 var(--primary); }
+    100% { box-shadow: 0 0 0 12px transparent; }
+}
+
+#result.flash {
+    animation: highlight 0.8s ease-out;
+}

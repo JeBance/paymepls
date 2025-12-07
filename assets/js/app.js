@@ -35,7 +35,30 @@ function initButtons() {
     const generateBtn = document.getElementById("generate-btn");
     const logo = document.querySelector(".logo");
 
-    generateBtn.addEventListener("click", generateLink);
+    generateBtn.addEventListener("click", () => {
+        // Генерация ссылки
+        generateLink();
+
+        // Акцент на блоке результата
+        const result = document.getElementById("result");
+
+        // Показать блок (если скрыт)
+        result.style.display = "block";
+
+        // Плавное появление
+        result.classList.add("show");
+
+        // Прокрутка к блоку
+        result.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+        // Flash-подсветка
+        result.classList.remove("flash");
+        void result.offsetWidth; // перезапуск анимации
+        result.classList.add("flash");
+    });
 
     logo.addEventListener("click", () => {
         location.href = location.origin + location.pathname;
@@ -49,7 +72,7 @@ function init() {
     applyThemeFromURL();
     checkForViewMode();
 
-    loadState();      // ✅ ВОТ ЭТОГО НЕ ХВАТАЛО
+    loadState(); // ✅ важно
 
     initMainFields();
     initButtons();
