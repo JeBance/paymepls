@@ -50,8 +50,8 @@ export function renderWallets() {
 }
 
 export function initAddWalletButton() {
-    const btn = document.getElementById("add-wallet-btn");
-    btn.addEventListener("click", () => {
+    const card = document.getElementById("add-wallet-card");
+    card.addEventListener("click", () => {
         addWallet();
         renderWallets();
     });
