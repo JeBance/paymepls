@@ -5,6 +5,15 @@ export function renderWallets() {
     const list = document.getElementById("wallet-list");
     list.innerHTML = "";
 
+    // Если нет кошельков — добавляем невидимую заглушку,
+    // чтобы сетка считала, что есть как минимум один элемент в левом столбце
+    if (state.wallets.length === 0) {
+        const placeholder = document.createElement("div");
+        placeholder.className = "card";
+        placeholder.style.visibility = "hidden";
+        list.appendChild(placeholder);
+    }
+
     state.wallets.forEach(wallet => {
         const div = document.createElement("div");
         div.className = "card";
@@ -25,6 +34,17 @@ export function renderWallets() {
 
         list.appendChild(div);
     });
+
+    // Добавляем карточку «+» всегда в конец списка
+    const addCard = document.createElement("div");
+    addCard.className = "wallet-add-card";
+    addCard.id = "add-wallet-card";
+    addCard.innerHTML = `<i class="fas fa-plus"></i>`;
+    addCard.addEventListener("click", () => {
+        addWallet();
+        renderWallets();
+    });
+    list.appendChild(addCard);
 
     document.querySelectorAll(".wallet-name").forEach(input => {
         input.addEventListener("input", e => {
@@ -50,9 +70,13 @@ export function renderWallets() {
 }
 
 export function initAddWalletButton() {
+    // Функция остаётся для совместимости, но логика клика теперь
+    // живёт внутри renderWallets в addCard.addEventListener.
     const card = document.getElementById("add-wallet-card");
-    card.addEventListener("click", () => {
-        addWallet();
-        renderWallets();
-    });
+    if (card) {
+        card.addEventListener("click", () => {
+            addWallet();
+            renderWallets();
+        });
+    }
 }
