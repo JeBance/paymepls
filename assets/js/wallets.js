@@ -7,9 +7,8 @@ export function renderWallets() {
     // Очищаем всё, кроме кнопки «+»
     const addCard = document.getElementById("add-wallet-card");
     list.innerHTML = "";
-    list.appendChild(addCard); // Сначала вставляем «+»
 
-    // Если нет кошельков — добавляем заглушку после «+»
+    // Если нет кошельков — добавляем заглушку перед кнопкой
     if (state.wallets.length === 0) {
         const placeholder = document.createElement("div");
         placeholder.className = "card";
@@ -17,6 +16,7 @@ export function renderWallets() {
         list.appendChild(placeholder);
     }
 
+    // Добавляем все кошельки
     state.wallets.forEach(wallet => {
         const div = document.createElement("div");
         div.className = "card";
@@ -37,6 +37,9 @@ export function renderWallets() {
 
         list.appendChild(div);
     });
+
+    // Добавляем кнопку «+» в конец
+    list.appendChild(addCard);
 
     document.querySelectorAll(".wallet-name").forEach(input => {
         input.addEventListener("input", e => {
