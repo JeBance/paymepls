@@ -23,6 +23,34 @@ export function renderWallets() {
             const div = document.createElement("div");
             div.className = "card";
 
+            // ✅ drag & drop
+            div.draggable = true;
+            div.dataset.id = wallet.id;
+
+            div.addEventListener("dragstart", e => {
+                e.dataTransfer.setData("id", wallet.id);
+            });
+
+            div.addEventListener("dragover", e => {
+                e.preventDefault();
+            });
+
+            div.addEventListener("drop", e => {
+                e.preventDefault();
+                const draggedId = Number(e.dataTransfer.getData("id"));
+                const targetId = Number(div.dataset.id);
+
+                if (draggedId === targetId) return;
+
+                const fromIndex = state.wallets.findIndex(w => w.id === draggedId);
+                const toIndex = state.wallets.findIndex(w => w.id === targetId);
+
+                const [moved] = state.wallets.splice(fromIndex, 1);
+                state.wallets.splice(toIndex, 0, moved);
+
+                renderWallets();
+            });
+
             div.innerHTML = `
                 <h3>Кошелёк</h3>
 
