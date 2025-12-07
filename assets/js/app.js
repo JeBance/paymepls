@@ -1,4 +1,4 @@
-import { state } from "./store.js";
+import { state, loadState } from "./store.js";
 import { renderWallets, initAddWalletButton } from "./wallets.js";
 import { generateLink, initLinkButtons } from "./link.js";
 import { checkForViewMode, applyThemeFromURL } from "./viewmode.js";
@@ -48,6 +48,8 @@ function initButtons() {
 function init() {
     applyThemeFromURL();
     checkForViewMode();
+
+    loadState();      // ✅ ВОТ ЭТОГО НЕ ХВАТАЛО
 
     initMainFields();
     initButtons();

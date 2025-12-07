@@ -1,5 +1,7 @@
-import { state, addWallet, removeWallet, updateWalletName, updateWalletValue } from "./store.js";
+import { state, addWallet, removeWallet, updateWalletName, updateWalletValue, undoDelete } from "./store.js";
 import { escapeHTML } from "./utils.js";
+
+let undoTimer = null;
 
 export function renderWallets() {
     const list = document.getElementById("wallet-list");
@@ -60,9 +62,14 @@ export function renderWallets() {
             const id = Number(btn.dataset.remove);
             removeWallet(id);
             renderWallets();
+            showUndoToast();
         });
     });
 }
+
+/* ============================
+   ADD WALLET BUTTON
+============================ */
 
 export function initAddWalletButton() {
     const card = document.getElementById("add-wallet-card");
@@ -73,3 +80,23 @@ export function initAddWalletButton() {
         renderWallets();
     });
 }
+
+/* ============================
+   UNDO TOAST
+============================ */
+
+function showUndoToast() {
+    const toast = document.getElementById("undo-toast");
+    toast.classList.add("show");
+
+    clearTimeout(undoTimer);
+    undoTimer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
+}
+
+document.getElementById("undo-btn").addEventListener("click", () => {
+    undoDelete();
+    renderWallets();
+    document.getElementById("undo-toast").classList.remove("show");
+});

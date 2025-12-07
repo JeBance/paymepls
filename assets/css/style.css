@@ -226,3 +226,34 @@ textarea.input{resize:vertical;min-height:140px;}
     margin-top: 12px !important;
     margin-bottom: 24px !important;
 }
+
+/* ===========================
+   UNDO TOAST (ФИРМЕННЫЙ)
+=========================== */
+
+#undo-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: #fff;
+    padding: 14px 22px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    z-index: 9999;
+}
+
+#undo-toast.show {
+    opacity: 1;
+}
+
+#undo-btn {
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+}
