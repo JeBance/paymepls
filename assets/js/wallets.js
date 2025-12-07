@@ -27,10 +27,20 @@ export function renderWallets() {
                 <h3>Кошелёк</h3>
 
                 <label>Название</label>
-                <input class="input wallet-name" data-id="${wallet.id}" value="${escapeHTML(wallet.name)}">
+                <input 
+                    class="input wallet-name" 
+                    data-id="${wallet.id}" 
+                    value="${escapeHTML(wallet.name)}"
+                    placeholder="Название кошелька"
+                >
 
                 <label style="margin-top:16px;">Реквизиты</label>
-                <input class="input wallet-value" data-id="${wallet.id}" value="${escapeHTML(wallet.value)}">
+                <input 
+                    class="input wallet-value" 
+                    data-id="${wallet.id}" 
+                    value="${escapeHTML(wallet.value)}"
+                    placeholder="Номер карты или счёта"
+                >
 
                 <button class="btn btn-secondary" style="margin-top:24px;" data-remove="${wallet.id}">
                     <i class="fas fa-trash"></i> Удалить
