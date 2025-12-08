@@ -452,3 +452,39 @@ textarea.input{resize:vertical;min-height:140px;}
   width: 180px !important;
   height: 180px !important;
 }
+
+/* QR-карточка: плавное появление */
+#qr-short-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+#qr-short-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* QR-блок внутри карточки */
+#qr-short {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+}
+
+/* Адаптивный размер QR-кода */
+#qr-short canvas {
+  width: 180px !important;
+  height: 180px !important;
+}
+
+@media (max-width: 480px) {
+  #qr-short canvas {
+    width: 140px !important;
+    height: 140px !important;
+  }
+}

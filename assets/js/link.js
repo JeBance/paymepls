@@ -86,6 +86,7 @@ function renderQR(url) {
 
     box.innerHTML = "";
     card.classList.remove("hidden");
+    setTimeout(() => card.classList.add("visible"), 10);
 
     new QRCode(box, {
         text: url,
