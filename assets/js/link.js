@@ -1,5 +1,5 @@
 /* ============================================================
-   LINK GENERATION + SHORTENER + DEBUG MODES
+   LINK GENERATION + SHORTENER + DEBUG MODES + AUTO SHORTEN + QR
 ============================================================ */
 
 import { state } from "./store.js";
@@ -77,7 +77,28 @@ async function shortenUrl(url) {
 }
 
 /* ============================
-   GENERATE LINK
+   QR CODE
+============================ */
+
+function renderQR(url) {
+    const box = document.getElementById("qr-short");
+    const card = document.getElementById("qr-short-card");
+
+    box.innerHTML = "";
+    card.classList.remove("hidden");
+
+    new QRCode(box, {
+        text: url,
+        width: 180,
+        height: 180,
+        colorDark: "#000",
+        colorLight: "#fff",
+        correctLevel: QRCode.CorrectLevel.M
+    });
+}
+
+/* ============================
+   GENERATE LINK + AUTO SHORTEN
 ============================ */
 
 export function generateLink() {
@@ -90,15 +111,18 @@ export function generateLink() {
     };
 
     const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
-    const url = `${location.origin}${location.pathname}?data=${encoded}&theme=${state.theme}`;
+    const longUrl = `${location.origin}${location.pathname}?data=${encoded}&theme=${state.theme}`;
 
     const input = document.getElementById("generated-url");
     const notice = document.getElementById("shorten-notice");
 
-    input.value = url;
-    input.dataset.original = url;
+    input.value = longUrl;
+    input.dataset.original = longUrl;
 
     if (notice) notice.textContent = "";
+
+    /* ✅ Автоматическое сокращение */
+    autoShorten(longUrl);
 
     if (DEBUG_PERF) {
         performance.mark("generate-end");
@@ -116,6 +140,28 @@ export function generateLink() {
             `⚡ Производительность\n-------------------------\n` +
             `⏱ Генерация ссылки: ${Math.round(m.duration)} ms`;
     }
+}
+
+/* ============================
+   AUTO SHORTEN
+============================ */
+
+async function autoShorten(url) {
+    const shortenBtn = document.getElementById("shorten-btn");
+    const input = document.getElementById("generated-url");
+
+    shortenBtn.dataset.loading = "true";
+    input.value = "Сокращаю…";
+
+    const result = await shortenUrl(url);
+
+    input.value = result.url;
+
+    if (result.ok) {
+        renderQR(result.url);
+    }
+
+    shortenBtn.dataset.loading = "false";
 }
 
 /* ============================
@@ -177,82 +223,13 @@ export function initLinkButtons() {
         });
     }
 
-    /* SHORTEN */
+    /* MANUAL SHORTEN */
     if (shortenBtn) {
         shortenBtn.addEventListener("click", async () => {
             const input = document.getElementById("generated-url");
-            const notice = document.getElementById("shorten-notice");
             const original = input.dataset.original || input.value;
 
-            if (!original) return;
-
-            if (notice) notice.textContent = "";
-
-            if (!DEBUG && !DEBUG2) {
-                logCard.classList.add("hidden");
-            } else {
-                logCard.classList.add("hidden");
-                logCard.classList.remove("success", "error", "info");
-                logContent.textContent = "";
-            }
-
-            shortenBtn.dataset.loading = "true";
-            const previous = input.value;
-            input.value = "Сокращаю...";
-
-            const result = await shortenUrl(original);
-            input.value = result.url;
-            input.dataset.last = previous;
-
-            if (!result.ok && notice) {
-                notice.textContent = "Не удалось сократить ссылку, показываю оригинал.";
-            }
-
-            /* ============================
-               DEBUG 2 — расширенный лог
-            ============================ */
-
-            if (DEBUG2) {
-                logCard.classList.remove("hidden");
-                logCard.classList.add("info");
-
-                let headers = "";
-                if (result.headers) {
-                    result.headers.forEach((v, k) => {
-                        headers += `${k}: ${v}\n`;
-                    });
-                }
-
-                logContent.textContent =
-                    renderDebugHeader() +
-                    `🔍 Расширенный лог\n-------------------------\n` +
-                    `⏱ Latency: ${result.latency} ms\n` +
-                    `📡 Статус: ${result.status}\n\n` +
-                    `📨 Заголовки:\n${headers}\n` +
-                    `📦 Ответ:\n${result.raw}`;
-            }
-
-            /* ============================
-               DEBUG 1 — базовый лог
-            ============================ */
-
-            if (DEBUG && !DEBUG2) {
-                logCard.classList.remove("hidden");
-                logCard.classList.add(result.ok ? "success" : "error");
-
-                logContent.textContent =
-                    renderDebugHeader() +
-                    (result.ok ? "✅ Успех\n" : "❌ Ошибка\n") +
-                    result.raw;
-            }
-
-            shortenBtn.dataset.loading = "false";
-
-            if (DEBUG || DEBUG2) {
-                hideBtn.onclick = () => {
-                    logCard.classList.add("hidden");
-                };
-            }
+            autoShorten(original);
         });
     }
 }

@@ -414,3 +414,13 @@ textarea.input{resize:vertical;min-height:140px;}
     text-decoration: underline;
     cursor: pointer;
 }
+
+#qr-short-card canvas {
+    width: 180px !important;
+    height: 180px !important;
+    margin-top: 12px;
+}
+
+#qr-short-card.hidden {
+    display: none;
+}
