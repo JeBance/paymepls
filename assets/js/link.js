@@ -1,43 +1,14 @@
 /* ============================================================
-   LINK GENERATION + SHORTENER + DEBUG MODES + AUTO SHORTEN + QR
+   LINK GENERATION + SHORTENER + AUTO SHORTEN + QR
 ============================================================ */
 
 import { state } from "./store.js";
-
-/* ============================
-   DEBUG MODES
-============================ */
-
-const params = new URL(location.href).searchParams;
-const DEBUG = params.get("debug") === "1";
-const DEBUG2 = params.get("debug") === "2";
-const DEBUG_PERF = params.get("debug") === "perf";
-const DEBUG_KV = params.get("debug") === "kv";
-
-/* ============================
-   DEBUG HEADER
-============================ */
-
-function renderDebugHeader() {
-    const base = location.origin + location.pathname;
-
-    return (
-        "🔧 Debug‑режимы\n" +
-        "-------------------------\n" +
-        `• Базовый лог: ${base}?debug=1\n` +
-        `• Расширенный лог: ${base}?debug=2\n` +
-        `• Производительность: ${base}?debug=perf\n` +
-        `• Тест KV: ${base}?debug=kv\n\n`
-    );
-}
 
 /* ============================
    SHORTENER API
 ============================ */
 
 async function shortenUrl(url) {
-    const t0 = performance.now();
-
     try {
         const res = await fetch("https://links.paymepls.workers.dev/create", {
             method: "POST",
@@ -45,7 +16,6 @@ async function shortenUrl(url) {
             body: JSON.stringify({ target: url })
         });
 
-        const latency = Math.round(performance.now() - t0);
         const text = await res.text();
 
         let data = {};
@@ -57,21 +27,13 @@ async function shortenUrl(url) {
 
         return {
             ok: !!data.short,
-            url: data.short || url,
-            raw: text,
-            latency,
-            status: res.status,
-            headers: res.headers
+            url: data.short || url
         };
 
     } catch (e) {
         return {
             ok: false,
-            url,
-            raw: "Request error:\n" + e.toString(),
-            latency: -1,
-            status: 0,
-            headers: null
+            url
         };
     }
 }
@@ -97,7 +59,7 @@ function renderQR(url) {
         correctLevel: QRCode.CorrectLevel.M
     });
 
-    // ✅ Делаем QR-код кликабельным для скачивания
+    // ✅ Кликабельное скачивание QR-кода
     setTimeout(() => {
         const canvas = box.querySelector("canvas");
         if (!canvas) return;
@@ -121,8 +83,6 @@ function renderQR(url) {
 ============================ */
 
 export function generateLink() {
-    if (DEBUG_PERF) performance.mark("generate-start");
-
     const data = {
         title: state.title,
         description: state.description,
@@ -140,25 +100,7 @@ export function generateLink() {
 
     if (notice) notice.textContent = "";
 
-    /* ✅ Автоматическое сокращение */
     autoShorten(longUrl);
-
-    if (DEBUG_PERF) {
-        performance.mark("generate-end");
-        performance.measure("generate-link", "generate-start", "generate-end");
-        const m = performance.getEntriesByName("generate-link")[0];
-
-        const logCard = document.getElementById("shorten-log");
-        const logContent = document.getElementById("shorten-log-content");
-
-        logCard.classList.remove("hidden");
-        logCard.classList.add("info");
-
-        logContent.textContent =
-            renderDebugHeader() +
-            `⚡ Производительность\n-------------------------\n` +
-            `⏱ Генерация ссылки: ${Math.round(m.duration)} ms`;
-    }
 }
 
 /* ============================
@@ -191,43 +133,6 @@ export function initLinkButtons() {
     const copyBtn = document.getElementById("copy-btn");
     const testBtn = document.getElementById("test-link-btn");
     const shortenBtn = document.getElementById("shorten-btn");
-
-    const logCard = document.getElementById("shorten-log");
-    const logContent = document.getElementById("shorten-log-content");
-    const hideBtn = document.getElementById("shorten-log-hide");
-
-    /* ============================
-       ✅ Динамическая кнопка KV (только в debug=kv)
-    ============================ */
-
-    if (DEBUG_KV) {
-        const btnRow = shortenBtn.parentElement;
-
-        const kvTestBtn = document.createElement("button");
-        kvTestBtn.className = "btn btn-secondary";
-        kvTestBtn.innerHTML = `<i class="fas fa-vial"></i> Тест KV`;
-
-        btnRow.appendChild(kvTestBtn);
-
-        kvTestBtn.onclick = async () => {
-            logCard.classList.remove("hidden");
-            logCard.classList.add("info");
-
-            logContent.textContent =
-                renderDebugHeader() +
-                "⏳ Тестирую KV...";
-
-            const testUrl = "https://example.com/";
-            const result = await shortenUrl(testUrl);
-
-            logContent.textContent =
-                renderDebugHeader() +
-                `🧪 KV‑тест\n-------------------------\n` +
-                `⏱ Latency: ${result.latency} ms\n` +
-                `📡 Статус: ${result.status}\n\n` +
-                `📦 Ответ:\n${result.raw}`;
-        };
-    }
 
     /* COPY */
     if (copyBtn) {
