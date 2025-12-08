@@ -15,18 +15,26 @@ let lastDeleted = null;
    LOCAL STORAGE
 ============================ */
 
+const STORAGE_KEY = "paymepls-state";
+
 export function saveState() {
-    localStorage.setItem("wallets", JSON.stringify(state.wallets));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
 export function loadState() {
-    const saved = localStorage.getItem("wallets");
-    if (saved) {
-        try {
-            state.wallets = JSON.parse(saved);
-        } catch {
-            state.wallets = [];
-        }
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+
+    try {
+        const data = JSON.parse(saved);
+
+        state.title = data.title || "";
+        state.description = data.description || "";
+        state.theme = data.theme || "classic";
+        state.wallets = Array.isArray(data.wallets) ? data.wallets : [];
+
+    } catch {
+        // если что-то повреждено — просто игнорируем
     }
 }
 

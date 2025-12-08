@@ -1,4 +1,4 @@
-import { state, loadState } from "./store.js";
+import { state, loadState, saveState } from "./store.js";
 import { renderWallets, initAddWalletButton } from "./wallets.js";
 import { generateLink, initLinkButtons } from "./link.js";
 import { checkForViewMode, applyThemeFromURL } from "./viewmode.js";
@@ -8,25 +8,36 @@ function initMainFields() {
     const descInput = document.getElementById("description");
     const themeSelect = document.getElementById("theme-select");
 
-    state.title = "Мои реквизиты";
-    state.description = "Выберите удобный способ для перевода";
+    // ✅ Подставляем сохранённые значения
+    titleInput.value = state.title || "Мои реквизиты";
+    descInput.value = state.description || "Выберите удобный способ для перевода";
+    themeSelect.value = state.theme || "classic";
 
+    // ✅ Применяем тему к body
+    document.body.classList.forEach(c => {
+        if (c.startsWith("theme-")) document.body.classList.remove(c);
+    });
+    document.body.classList.add(`theme-${state.theme}`);
+
+    // ✅ Обработчики с сохранением состояния
     titleInput.addEventListener("input", e => {
         state.title = e.target.value;
+        saveState();
     });
 
     descInput.addEventListener("input", e => {
         state.description = e.target.value;
+        saveState();
     });
 
     themeSelect.addEventListener("change", e => {
         const theme = e.target.value;
         state.theme = theme;
+        saveState();
 
         document.body.classList.forEach(c => {
             if (c.startsWith("theme-")) document.body.classList.remove(c);
         });
-
         document.body.classList.add(`theme-${theme}`);
     });
 }
@@ -36,27 +47,19 @@ function initButtons() {
     const logo = document.querySelector(".logo");
 
     generateBtn.addEventListener("click", () => {
-        // Генерация ссылки
         generateLink();
 
-        // Акцент на блоке результата
         const result = document.getElementById("result");
-
-        // Показать блок (если скрыт)
         result.style.display = "block";
-
-        // Плавное появление
         result.classList.add("show");
 
-        // Прокрутка к блоку
         result.scrollIntoView({
             behavior: "smooth",
             block: "start"
         });
 
-        // Flash-подсветка
         result.classList.remove("flash");
-        void result.offsetWidth; // перезапуск анимации
+        void result.offsetWidth;
         result.classList.add("flash");
     });
 
@@ -72,7 +75,7 @@ function init() {
     applyThemeFromURL();
     checkForViewMode();
 
-    loadState(); // ✅ важно
+    loadState(); // ✅ теперь загружает title, description, theme, wallets
 
     initMainFields();
     initButtons();
