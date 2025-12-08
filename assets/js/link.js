@@ -101,16 +101,16 @@ function renderQR(url) {
     setTimeout(() => {
         const canvas = box.querySelector("canvas");
         if (!canvas) return;
-    
+
         canvas.style.cursor = "pointer";
-    
+
         canvas.onclick = () => {
             const link = document.createElement("a");
             link.href = canvas.toDataURL("image/png");
-        
+
             const id = url.split("/").pop().trim();
-        
             link.download = `paymepls-${id}.png`;
+
             link.click();
         };
     }, 50);
@@ -191,18 +191,23 @@ export function initLinkButtons() {
     const copyBtn = document.getElementById("copy-btn");
     const testBtn = document.getElementById("test-link-btn");
     const shortenBtn = document.getElementById("shorten-btn");
-    const kvTestBtn = document.getElementById("kv-test-btn");
 
     const logCard = document.getElementById("shorten-log");
     const logContent = document.getElementById("shorten-log-content");
     const hideBtn = document.getElementById("shorten-log-hide");
 
     /* ============================
-       KV TEST BUTTON
+       ✅ Динамическая кнопка KV (только в debug=kv)
     ============================ */
 
-    if (DEBUG_KV && kvTestBtn) {
-        kvTestBtn.classList.remove("hidden");
+    if (DEBUG_KV) {
+        const btnRow = shortenBtn.parentElement;
+
+        const kvTestBtn = document.createElement("button");
+        kvTestBtn.className = "btn btn-secondary";
+        kvTestBtn.innerHTML = `<i class="fas fa-vial"></i> Тест KV`;
+
+        btnRow.appendChild(kvTestBtn);
 
         kvTestBtn.onclick = async () => {
             logCard.classList.remove("hidden");
