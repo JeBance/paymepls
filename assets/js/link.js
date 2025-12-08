@@ -5,6 +5,12 @@
 import { state } from "./store.js";
 
 /* ============================
+   DEBUG MODE
+============================ */
+
+const DEBUG = new URL(location.href).searchParams.get("debug") === "1";
+
+/* ============================
    SHORTENER API (Cloudflare Worker)
 ============================ */
 
@@ -16,20 +22,18 @@ async function shortenUrl(url) {
             body: JSON.stringify({ target: url })
         });
 
-        if (!res.ok) {
-            return { ok: false, url };
+        const text = await res.text();
+
+        let data = {};
+        try {
+            data = JSON.parse(text);
+        } catch {
+            data = { parseError: true, raw: text };
         }
 
-        const data = await res.json();
-
-        if (data.short) {
-            return { ok: true, url: data.short };
-        }
-
-        return { ok: false, url };
+        return { ok: !!data.short, url: data.short || url, raw: text };
     } catch (e) {
-        console.warn("Shortener error:", e);
-        return { ok: false, url };
+        return { ok: false, url, raw: "Request error: " + e.toString() };
     }
 }
 
@@ -67,6 +71,10 @@ export function initLinkButtons() {
     const testBtn = document.getElementById("test-link-btn");
     const shortenBtn = document.getElementById("shorten-btn");
 
+    const logCard = document.getElementById("shorten-log");
+    const logContent = document.getElementById("shorten-log-content");
+    const hideBtn = document.getElementById("shorten-log-hide");
+
     /* COPY */
     if (copyBtn) {
         copyBtn.addEventListener("click", () => {
@@ -94,8 +102,15 @@ export function initLinkButtons() {
 
             if (!original) return;
 
-            if (notice) {
-                notice.textContent = "";
+            if (notice) notice.textContent = "";
+
+            // Скрываем лог, если debug выключен
+            if (!DEBUG) {
+                logCard.classList.add("hidden");
+            } else {
+                logCard.classList.add("hidden");
+                logCard.classList.remove("success", "error", "info");
+                logContent.textContent = "";
             }
 
             // Честный индикатор загрузки
@@ -104,18 +119,38 @@ export function initLinkButtons() {
             const previous = input.value;
             input.value = "Сокращаю...";
 
-            const shortened = await shortenUrl(original);
+            const result = await shortenUrl(original);
 
-            input.value = shortened.url;
+            input.value = result.url;
 
-            if (!shortened.ok && notice) {
+            if (!result.ok && notice) {
                 notice.textContent = "Не удалось сократить ссылку, показываю оригинал.";
             }
 
             input.dataset.last = previous;
 
+            // Показываем лог только в debug
+            if (DEBUG) {
+                logCard.classList.remove("hidden");
+
+                if (result.ok) {
+                    logCard.classList.add("success");
+                    logContent.textContent = "✅ Успех\n" + result.raw;
+                } else {
+                    logCard.classList.add("error");
+                    logContent.textContent = "❌ Ошибка\n" + result.raw;
+                }
+            }
+
             // Выключаем индикатор
             shortenBtn.dataset.loading = "false";
+
+            // Кнопка «Скрыть»
+            if (DEBUG) {
+                hideBtn.onclick = () => {
+                    logCard.classList.add("hidden");
+                };
+            }
         });
     }
 }

@@ -201,6 +201,64 @@ textarea.input{resize:vertical;min-height:140px;}
 }
 
 /* ===========================
+   LOG PANEL (NEW)
+=========================== */
+
+.log-card {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    background: rgba(0,0,0,0.04);
+    color: var(--text-main);
+    box-shadow: var(--shadow);
+    white-space: pre-wrap;
+    transition: 0.25s ease;
+}
+
+.log-card.hidden {
+    display: none;
+}
+
+.log-card.success {
+    border-left: 4px solid #2ecc71;
+}
+
+.log-card.error {
+    border-left: 4px solid #e74c3c;
+}
+
+.log-card.info {
+    border-left: 4px solid #3498db;
+}
+
+#shorten-log-hide {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* ✅ Тёмные темы для лог‑панели */
+.theme-dark .log-card,
+.theme-cyberpunk .log-card {
+    background: #222;
+    color: #ddd;
+}
+
+.theme-dark .log-card.success,
+.theme-cyberpunk .log-card.success {
+    border-left-color: #27ae60;
+}
+
+.theme-dark .log-card.error,
+.theme-cyberpunk .log-card.error {
+    border-left-color: #c0392b;
+}
+
+/* ===========================
    КНОПКА «ДОБАВИТЬ КОШЕЛЁК»
 =========================== */
 
