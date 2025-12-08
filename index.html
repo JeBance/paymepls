@@ -28,10 +28,10 @@
     <section id="constructor" class="card" style="margin-top: var(--section-gap);">
 
         <!-- Заголовок как input -->
-        <input id="title" class="input" style="font-size:1.6rem;font-weight:700;" value="Мои реквизиты">
+        <input id="title" class="input" style="font-size:1.6rem;font-weight:700;" value="Мои реквизиты" placeholder="Заголовок">
 
         <!-- Описание -->
-        <textarea id="description" class="input" style="margin-top:24px;">Выберите удобный способ для перевода</textarea>
+        <textarea id="description" class="input" style="margin-top:24px;" placeholder="Описание">Выберите удобный способ для перевода</textarea>
 
         <!-- Тема -->
         <div style="margin-top:24px;">
@@ -73,6 +73,8 @@
 
         <input id="generated-url" class="input" readonly style="margin-top: 20px;">
 
+        <p id="shorten-notice" style="margin-top:8px;font-size:0.9rem;color:var(--text-muted);"></p>
+
         <div style="margin-top: 28px; display:flex; gap:20px; flex-wrap:wrap;">
             <button id="copy-btn" class="btn">
                 <i class="fas fa-copy"></i> Скопировать
@@ -81,7 +83,13 @@
             <button id="test-link-btn" class="btn btn-secondary">
                 <i class="fas fa-external-link-alt"></i> Открыть
             </button>
+
+            <button id="shorten-btn" class="btn btn-secondary">
+                <i class="fas fa-scissors"></i> Сократить
+            </button>
         </div>
+
+        <p id="shorten-hint" style="margin-top:12px;font-size:0.85rem;color:var(--text-muted);opacity:0.8;">Сокращение ссылки — через внешний сервис, может работать нестабильно</p>
     </section>
 
     <!-- VIEW MODE -->
