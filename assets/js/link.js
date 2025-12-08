@@ -96,6 +96,24 @@ function renderQR(url) {
         colorLight: "#fff",
         correctLevel: QRCode.CorrectLevel.M
     });
+
+    // ✅ Делаем QR-код кликабельным для скачивания
+    setTimeout(() => {
+        const canvas = box.querySelector("canvas");
+        if (!canvas) return;
+    
+        canvas.style.cursor = "pointer";
+    
+        canvas.onclick = () => {
+            const link = document.createElement("a");
+            link.href = canvas.toDataURL("image/png");
+        
+            const id = url.split("/").pop().trim();
+        
+            link.download = `paymepls-${id}.png`;
+            link.click();
+        };
+    }, 50);
 }
 
 /* ============================

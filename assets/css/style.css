@@ -488,3 +488,8 @@ textarea.input{resize:vertical;min-height:140px;}
     height: 140px !important;
   }
 }
+
+#qr-short canvas:hover {
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+}
