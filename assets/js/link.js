@@ -1,38 +1,39 @@
 /* ============================================================
-   ГЕНЕРАЦИЯ ССЫЛКИ + СОКРАЩЕНИЕ
+   LINK GENERATION + SHORTENER
 ============================================================ */
 
 import { state } from "./store.js";
 
 /* ============================
-   SHORTENER API
+   SHORTENER API (Cloudflare Worker)
 ============================ */
 
 async function shortenUrl(url) {
     try {
-        const res = await fetch("https://ulvis.net/api/v1/shorten", {
+        const res = await fetch("https://paymepls.oleg-prudkov.workers.dev/api/shorten", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ url })
+            body: JSON.stringify({ longUrl: url })
         });
 
         const data = await res.json();
 
         if (data.shortUrl) {
-            return data.shortUrl;
+            return { ok: true, url: data.shortUrl };
         }
 
-        return url; // fallback
-    } catch {
-        return url; // fallback
+        return { ok: false, url };
+    } catch (e) {
+        console.warn("Shortener error:", e);
+        return { ok: false, url };
     }
 }
 
 /* ============================
-   ГЕНЕРАЦИЯ ССЫЛКИ
+   GENERATE LINK
 ============================ */
 
-export async function generateLink() {
+export function generateLink() {
     const data = {
         title: state.title,
         description: state.description,
@@ -40,25 +41,21 @@ export async function generateLink() {
     };
 
     const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
-    const longUrl = `${location.origin}${location.pathname}?data=${encoded}&theme=${state.theme}`;
+    const url = `${location.origin}${location.pathname}?data=${encoded}&theme=${state.theme}`;
 
     const input = document.getElementById("generated-url");
-    const result = document.getElementById("result");
+    const notice = document.getElementById("shorten-notice");
 
-    // Показываем длинную ссылку сразу
-    input.value = longUrl;
-    result.style.display = "block";
+    input.value = url;
+    input.dataset.original = url;
 
-    // Автоматическое сокращение
-    input.dataset.original = longUrl; // сохраняем оригинал
-    input.value = "Сокращаю...";
-
-    const short = await shortenUrl(longUrl);
-    input.value = short;
+    if (notice) {
+        notice.textContent = "";
+    }
 }
 
 /* ============================
-   КНОПКИ
+   BUTTONS
 ============================ */
 
 export function initLinkButtons() {
@@ -66,29 +63,49 @@ export function initLinkButtons() {
     const testBtn = document.getElementById("test-link-btn");
     const shortenBtn = document.getElementById("shorten-btn");
 
+    /* COPY */
     if (copyBtn) {
         copyBtn.addEventListener("click", () => {
             const url = document.getElementById("generated-url").value;
+            if (!url) return;
             navigator.clipboard.writeText(url);
         });
     }
 
+    /* OPEN */
     if (testBtn) {
         testBtn.addEventListener("click", () => {
             const url = document.getElementById("generated-url").value;
+            if (!url) return;
             window.open(url, "_blank");
         });
     }
 
+    /* SHORTEN */
     if (shortenBtn) {
         shortenBtn.addEventListener("click", async () => {
             const input = document.getElementById("generated-url");
+            const notice = document.getElementById("shorten-notice");
             const original = input.dataset.original || input.value;
 
+            if (!original) return;
+
+            if (notice) {
+                notice.textContent = "";
+            }
+
+            const previous = input.value;
             input.value = "Сокращаю...";
 
-            const short = await shortenUrl(original);
-            input.value = short;
+            const shortened = await shortenUrl(original);
+
+            input.value = shortened.url;
+
+            if (!shortened.ok && notice) {
+                notice.textContent = "Не удалось сократить ссылку, показываю оригинал.";
+            }
+
+            input.dataset.last = previous;
         });
     }
 }
