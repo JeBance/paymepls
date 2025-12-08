@@ -85,46 +85,43 @@
 
     <!-- РЕЗУЛЬТАТ -->
     <section id="result" class="card" style="margin-top: var(--section-gap); display:none;">
-        <h2>Готовая ссылка</h2>
-
-        <!-- ✅ Две колонки: слева ссылка, справа QR -->
-        <div class="grid-2" style="margin-top: 20px; align-items:flex-start;">
-
-            <!-- ✅ Левая колонка -->
-            <div>
-                <input id="generated-url" class="input" readonly>
-
-                <p id="shorten-notice"></p>
-
-                <div style="margin-top: 28px; display:flex; gap:20px; flex-wrap:wrap;">
-                    <button id="copy-btn" class="btn">
-                        <i class="fas fa-copy"></i> Скопировать
-                    </button>
-
-                    <button id="test-link-btn" class="btn btn-secondary">
-                        <i class="fas fa-external-link-alt"></i> Открыть
-                    </button>
-
-                    <button id="shorten-btn" class="btn btn-secondary" data-loading="false">
-                        <i class="fas fa-scissors"></i> Сократить
-                    </button>
-                </div>
-
-                <!-- ✅ Лог-панель -->
-                <div id="shorten-log" class="log-card hidden" style="margin-top:20px;">
-                    <div id="shorten-log-content"></div>
-                    <div id="shorten-log-hide">Скрыть</div>
-                </div>
-            </div>
-
-            <!-- ✅ Правая колонка — QR-код в отдельной карточке -->
-            <div id="qr-short-card" class="card hidden" style="text-align:center;">
-                <h3>QR‑код</h3>
-                <div id="qr-short"></div>
-            </div>
-
+      <h2>Готовая ссылка</h2>
+    
+      <div class="grid grid-2" style="margin-top: 28px; align-items: flex-start;">
+    
+        <!-- ✅ Левая колонка: ссылка + кнопки + лог -->
+        <div>
+          <input id="generated-url" class="input" readonly style="margin-top: 4px;">
+          <p id="shorten-notice"></p>
+    
+          <div style="margin-top: 20px; display:flex; gap:12px; flex-wrap:wrap;">
+            <button id="copy-btn" class="btn">
+              <i class="fas fa-copy"></i> Скопировать
+            </button>
+            <button id="test-link-btn" class="btn btn-secondary">
+              <i class="fas fa-external-link-alt"></i> Открыть
+            </button>
+            <button id="shorten-btn" class="btn btn-secondary" data-loading="false">
+              <i class="fas fa-scissors"></i> Сократить
+            </button>
+            <button id="kv-test-btn" class="btn btn-secondary hidden">
+              <i class="fas fa-vial"></i> Тест KV
+            </button>
+          </div>
+    
+          <div id="shorten-log" class="log-card hidden" style="margin-top: 20px;">
+            <div id="shorten-log-content"></div>
+            <div id="shorten-log-hide">Скрыть</div>
+          </div>
         </div>
-
+    
+        <!-- ✅ Правая колонка: QR-код -->
+        <div id="qr-short-card" class="card hidden" style="text-align:center;">
+          <h3>QR‑код</h3>
+          <div id="qr-short" style="margin-top:12px;"></div>
+        </div>
+    
+      </div>
     </section>
 
     <!-- VIEW MODE -->
