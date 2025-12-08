@@ -1,20 +1,22 @@
-/* ============================================================
-   LINK GENERATION + SHORTENER
-============================================================ */
-
 import { state } from "./store.js";
 
 /* ============================
-   DEBUG MODE
+   DEBUG MODES
 ============================ */
 
-const DEBUG = new URL(location.href).searchParams.get("debug") === "1";
+const params = new URL(location.href).searchParams;
+const DEBUG = params.get("debug") === "1";
+const DEBUG2 = params.get("debug") === "2";
+const DEBUG_PERF = params.get("debug") === "perf";
+const DEBUG_KV = params.get("debug") === "kv";
 
 /* ============================
-   SHORTENER API (Cloudflare Worker)
+   SHORTENER API
 ============================ */
 
 async function shortenUrl(url) {
+    const t0 = performance.now();
+
     try {
         const res = await fetch("https://links.paymepls.workers.dev/create", {
             method: "POST",
@@ -22,6 +24,7 @@ async function shortenUrl(url) {
             body: JSON.stringify({ target: url })
         });
 
+        const latency = Math.round(performance.now() - t0);
         const text = await res.text();
 
         let data = {};
@@ -31,9 +34,24 @@ async function shortenUrl(url) {
             data = { parseError: true, raw: text };
         }
 
-        return { ok: !!data.short, url: data.short || url, raw: text };
+        return {
+            ok: !!data.short,
+            url: data.short || url,
+            raw: text,
+            latency,
+            status: res.status,
+            headers: res.headers
+        };
+
     } catch (e) {
-        return { ok: false, url, raw: "Request error: " + e.toString() };
+        return {
+            ok: false,
+            url,
+            raw: "Request error:\n" + e.toString(),
+            latency: -1,
+            status: 0,
+            headers: null
+        };
     }
 }
 
@@ -42,6 +60,8 @@ async function shortenUrl(url) {
 ============================ */
 
 export function generateLink() {
+    if (DEBUG_PERF) performance.mark("generate-start");
+
     const data = {
         title: state.title,
         description: state.description,
@@ -57,8 +77,19 @@ export function generateLink() {
     input.value = url;
     input.dataset.original = url;
 
-    if (notice) {
-        notice.textContent = "";
+    if (notice) notice.textContent = "";
+
+    if (DEBUG_PERF) {
+        performance.mark("generate-end");
+        performance.measure("generate-link", "generate-start", "generate-end");
+        const m = performance.getEntriesByName("generate-link")[0];
+
+        const logCard = document.getElementById("shorten-log");
+        const logContent = document.getElementById("shorten-log-content");
+
+        logCard.classList.remove("hidden");
+        logCard.classList.add("info");
+        logContent.textContent = `⚡ Производительность\n-------------------------\n⏱ Генерация ссылки: ${Math.round(m.duration)} ms`;
     }
 }
 
@@ -70,12 +101,30 @@ export function initLinkButtons() {
     const copyBtn = document.getElementById("copy-btn");
     const testBtn = document.getElementById("test-link-btn");
     const shortenBtn = document.getElementById("shorten-btn");
+    const kvTestBtn = document.getElementById("kv-test-btn");
 
     const logCard = document.getElementById("shorten-log");
     const logContent = document.getElementById("shorten-log-content");
     const hideBtn = document.getElementById("shorten-log-hide");
 
-    /* COPY */
+    if (DEBUG_KV && kvTestBtn) {
+        kvTestBtn.classList.remove("hidden");
+        kvTestBtn.onclick = async () => {
+            logCard.classList.remove("hidden");
+            logCard.classList.add("info");
+            logContent.textContent = "⏳ Тестирую KV...";
+
+            const testUrl = "https://example.com/";
+            const result = await shortenUrl(testUrl);
+
+            logContent.textContent =
+                `🧪 KV‑тест\n-------------------------\n` +
+                `⏱ Latency: ${result.latency} ms\n` +
+                `📡 Статус: ${result.status}\n\n` +
+                `📦 Ответ:\n${result.raw}`;
+        };
+    }
+
     if (copyBtn) {
         copyBtn.addEventListener("click", () => {
             const url = document.getElementById("generated-url").value;
@@ -84,7 +133,6 @@ export function initLinkButtons() {
         });
     }
 
-    /* OPEN */
     if (testBtn) {
         testBtn.addEventListener("click", () => {
             const url = document.getElementById("generated-url").value;
@@ -93,7 +141,6 @@ export function initLinkButtons() {
         });
     }
 
-    /* SHORTEN */
     if (shortenBtn) {
         shortenBtn.addEventListener("click", async () => {
             const input = document.getElementById("generated-url");
@@ -104,8 +151,7 @@ export function initLinkButtons() {
 
             if (notice) notice.textContent = "";
 
-            // Скрываем лог, если debug выключен
-            if (!DEBUG) {
+            if (!DEBUG && !DEBUG2) {
                 logCard.classList.add("hidden");
             } else {
                 logCard.classList.add("hidden");
@@ -113,40 +159,46 @@ export function initLinkButtons() {
                 logContent.textContent = "";
             }
 
-            // Честный индикатор загрузки
             shortenBtn.dataset.loading = "true";
-
             const previous = input.value;
             input.value = "Сокращаю...";
 
             const result = await shortenUrl(original);
-
             input.value = result.url;
+            input.dataset.last = previous;
 
             if (!result.ok && notice) {
                 notice.textContent = "Не удалось сократить ссылку, показываю оригинал.";
             }
 
-            input.dataset.last = previous;
-
-            // Показываем лог только в debug
-            if (DEBUG) {
+            if (DEBUG2) {
                 logCard.classList.remove("hidden");
+                logCard.classList.add("info");
 
-                if (result.ok) {
-                    logCard.classList.add("success");
-                    logContent.textContent = "✅ Успех\n" + result.raw;
-                } else {
-                    logCard.classList.add("error");
-                    logContent.textContent = "❌ Ошибка\n" + result.raw;
+                let headers = "";
+                if (result.headers) {
+                    result.headers.forEach((v, k) => {
+                        headers += `${k}: ${v}\n`;
+                    });
                 }
+
+                logContent.textContent =
+                    `🔍 Расширенный лог\n-------------------------\n` +
+                    `⏱ Latency: ${result.latency} ms\n` +
+                    `📡 Статус: ${result.status}\n\n` +
+                    `📨 Заголовки:\n${headers}\n` +
+                    `📦 Ответ:\n${result.raw}`;
             }
 
-            // Выключаем индикатор
+            if (DEBUG && !DEBUG2) {
+                logCard.classList.remove("hidden");
+                logCard.classList.add(result.ok ? "success" : "error");
+                logContent.textContent = (result.ok ? "✅ Успех\n" : "❌ Ошибка\n") + result.raw;
+            }
+
             shortenBtn.dataset.loading = "false";
 
-            // Кнопка «Скрыть»
-            if (DEBUG) {
+            if (DEBUG || DEBUG2) {
                 hideBtn.onclick = () => {
                     logCard.classList.add("hidden");
                 };
