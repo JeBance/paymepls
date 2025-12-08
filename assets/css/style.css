@@ -434,3 +434,21 @@ textarea.input{resize:vertical;min-height:140px;}
 #qr-short-card.hidden {
   display: none;
 }
+
+#qr-short-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#qr-short {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+}
+
+#qr-short canvas {
+  width: 180px !important;
+  height: 180px !important;
+}
