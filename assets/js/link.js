@@ -10,16 +10,20 @@ import { state } from "./store.js";
 
 async function shortenUrl(url) {
     try {
-        const res = await fetch("https://paymepls.oleg-prudkov.workers.dev/api/shorten", {
+        const res = await fetch("https://links.paymepls.workers.dev/create", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ longUrl: url })
+            body: JSON.stringify({ target: url })
         });
+
+        if (!res.ok) {
+            return { ok: false, url };
+        }
 
         const data = await res.json();
 
-        if (data.shortUrl) {
-            return { ok: true, url: data.shortUrl };
+        if (data.short) {
+            return { ok: true, url: data.short };
         }
 
         return { ok: false, url };
@@ -94,6 +98,9 @@ export function initLinkButtons() {
                 notice.textContent = "";
             }
 
+            // Честный индикатор загрузки
+            shortenBtn.dataset.loading = "true";
+
             const previous = input.value;
             input.value = "Сокращаю...";
 
@@ -106,6 +113,9 @@ export function initLinkButtons() {
             }
 
             input.dataset.last = previous;
+
+            // Выключаем индикатор
+            shortenBtn.dataset.loading = "false";
         });
     }
 }

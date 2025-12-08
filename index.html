@@ -8,6 +8,22 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="assets/css/style.css">
 
+<style>
+    /* Честный индикатор загрузки */
+    #shorten-btn[data-loading="true"] {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    /* Сообщение под ссылкой */
+    #shorten-notice {
+        margin-top: 8px;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        opacity: 0.9;
+    }
+</style>
+
 </head>
 
 <body class="theme-classic">
@@ -73,7 +89,7 @@
 
         <input id="generated-url" class="input" readonly style="margin-top: 20px;">
 
-        <p id="shorten-notice" style="margin-top:8px;font-size:0.9rem;color:var(--text-muted);"></p>
+        <p id="shorten-notice"></p>
 
         <div style="margin-top: 28px; display:flex; gap:20px; flex-wrap:wrap;">
             <button id="copy-btn" class="btn">
@@ -84,12 +100,14 @@
                 <i class="fas fa-external-link-alt"></i> Открыть
             </button>
 
-            <button id="shorten-btn" class="btn btn-secondary">
+            <button id="shorten-btn" class="btn btn-secondary" data-loading="false">
                 <i class="fas fa-scissors"></i> Сократить
             </button>
         </div>
 
-        <p id="shorten-hint" style="margin-top:12px;font-size:0.85rem;color:var(--text-muted);opacity:0.8;">Сокращение ссылки — через внешний сервис, может работать нестабильно</p>
+        <p id="shorten-hint" style="margin-top:12px;font-size:0.85rem;color:var(--text-muted);opacity:0.8;">
+            Сокращение ссылки — через ваш Cloudflare Worker
+        </p>
     </section>
 
     <!-- VIEW MODE -->
