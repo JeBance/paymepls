@@ -1,3 +1,7 @@
+/* ============================================================
+   LINK GENERATION + SHORTENER + DEBUG MODES
+============================================================ */
+
 import { state } from "./store.js";
 
 /* ============================
@@ -9,6 +13,23 @@ const DEBUG = params.get("debug") === "1";
 const DEBUG2 = params.get("debug") === "2";
 const DEBUG_PERF = params.get("debug") === "perf";
 const DEBUG_KV = params.get("debug") === "kv";
+
+/* ============================
+   DEBUG HEADER
+============================ */
+
+function renderDebugHeader() {
+    const base = location.origin + location.pathname;
+
+    return (
+        "🔧 Debug‑режимы\n" +
+        "-------------------------\n" +
+        `• Базовый лог: ${base}?debug=1\n` +
+        `• Расширенный лог: ${base}?debug=2\n` +
+        `• Производительность: ${base}?debug=perf\n` +
+        `• Тест KV: ${base}?debug=kv\n\n`
+    );
+}
 
 /* ============================
    SHORTENER API
@@ -89,7 +110,11 @@ export function generateLink() {
 
         logCard.classList.remove("hidden");
         logCard.classList.add("info");
-        logContent.textContent = `⚡ Производительность\n-------------------------\n⏱ Генерация ссылки: ${Math.round(m.duration)} ms`;
+
+        logContent.textContent =
+            renderDebugHeader() +
+            `⚡ Производительность\n-------------------------\n` +
+            `⏱ Генерация ссылки: ${Math.round(m.duration)} ms`;
     }
 }
 
@@ -107,17 +132,26 @@ export function initLinkButtons() {
     const logContent = document.getElementById("shorten-log-content");
     const hideBtn = document.getElementById("shorten-log-hide");
 
+    /* ============================
+       KV TEST BUTTON
+    ============================ */
+
     if (DEBUG_KV && kvTestBtn) {
         kvTestBtn.classList.remove("hidden");
+
         kvTestBtn.onclick = async () => {
             logCard.classList.remove("hidden");
             logCard.classList.add("info");
-            logContent.textContent = "⏳ Тестирую KV...";
+
+            logContent.textContent =
+                renderDebugHeader() +
+                "⏳ Тестирую KV...";
 
             const testUrl = "https://example.com/";
             const result = await shortenUrl(testUrl);
 
             logContent.textContent =
+                renderDebugHeader() +
                 `🧪 KV‑тест\n-------------------------\n` +
                 `⏱ Latency: ${result.latency} ms\n` +
                 `📡 Статус: ${result.status}\n\n` +
@@ -125,6 +159,7 @@ export function initLinkButtons() {
         };
     }
 
+    /* COPY */
     if (copyBtn) {
         copyBtn.addEventListener("click", () => {
             const url = document.getElementById("generated-url").value;
@@ -133,6 +168,7 @@ export function initLinkButtons() {
         });
     }
 
+    /* OPEN */
     if (testBtn) {
         testBtn.addEventListener("click", () => {
             const url = document.getElementById("generated-url").value;
@@ -141,6 +177,7 @@ export function initLinkButtons() {
         });
     }
 
+    /* SHORTEN */
     if (shortenBtn) {
         shortenBtn.addEventListener("click", async () => {
             const input = document.getElementById("generated-url");
@@ -171,6 +208,10 @@ export function initLinkButtons() {
                 notice.textContent = "Не удалось сократить ссылку, показываю оригинал.";
             }
 
+            /* ============================
+               DEBUG 2 — расширенный лог
+            ============================ */
+
             if (DEBUG2) {
                 logCard.classList.remove("hidden");
                 logCard.classList.add("info");
@@ -183,6 +224,7 @@ export function initLinkButtons() {
                 }
 
                 logContent.textContent =
+                    renderDebugHeader() +
                     `🔍 Расширенный лог\n-------------------------\n` +
                     `⏱ Latency: ${result.latency} ms\n` +
                     `📡 Статус: ${result.status}\n\n` +
@@ -190,10 +232,18 @@ export function initLinkButtons() {
                     `📦 Ответ:\n${result.raw}`;
             }
 
+            /* ============================
+               DEBUG 1 — базовый лог
+            ============================ */
+
             if (DEBUG && !DEBUG2) {
                 logCard.classList.remove("hidden");
                 logCard.classList.add(result.ok ? "success" : "error");
-                logContent.textContent = (result.ok ? "✅ Успех\n" : "❌ Ошибка\n") + result.raw;
+
+                logContent.textContent =
+                    renderDebugHeader() +
+                    (result.ok ? "✅ Успех\n" : "❌ Ошибка\n") +
+                    result.raw;
             }
 
             shortenBtn.dataset.loading = "false";

@@ -402,3 +402,15 @@ textarea.input{resize:vertical;min-height:140px;}
     word-break: break-word;
     line-height: 1.5;
 }
+
+#shorten-log-content {
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.55;
+}
+
+#shorten-log-content a {
+    color: var(--primary);
+    text-decoration: underline;
+    cursor: pointer;
+}
